@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# Redirect all requests to index.php except existing files and directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Security: Prevent directory browsing
+Options -Indexes
+
+# Prevent access to sensitive files
+<FilesMatch "^(\.env|composer\.(json|lock)|\.git)">
+    Require all denied
+</FilesMatch>
