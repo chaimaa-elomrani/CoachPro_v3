@@ -1,5 +1,5 @@
 <?php
-namespace APP\Services;
+namespace App\Services;
 
 use App\Services\ServiceInterface;
 use App\Models\Reservations;
@@ -64,16 +64,19 @@ class ReservationService implements ServiceInterface{
         return true ;
     }
 
-    public function getCoachReservations(int $coachId) : array{
+     public function getCoachReservations(int $coachId): array
+    {
         $reservation = new Reservations();
-        $stmt = $reservation->db->prepare("
-        SELECT r.*, s.title, s.date, u.email as sportif_email
-        FROM reservations r
-        INNER JOIN seances s ON r.seance_id = s.id
-        INNER JOIN users u ON r.sportif_id = u.id
-        WHERE s.coach_id = :coach_id
-        ORDER BY r.created_at DESC
-    ");
-    $stmt->execute(['coach_id' => $coachId]);
-    return $stmt->fetchAll();    }
+        $db = $reservation->getDb(); // Assume Reservations model provides getDb()
+        $stmt = $db->prepare("
+            SELECT r.*, s.title, s.date, u.email as sportif_email
+            FROM reservations r
+            INNER JOIN seances s ON r.seance_id = s.id
+            INNER JOIN users u ON r.sportif_id = u.id
+            WHERE s.coach_id = :coach_id
+            ORDER BY r.created_at DESC
+        ");
+        $stmt->execute(['coach_id' => $coachId]);
+        return $stmt->fetchAll();
+    }
 }
